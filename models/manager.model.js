@@ -1,25 +1,25 @@
 import { hash } from "bcrypt";
 import { model, Schema } from "mongoose";
 
-const adminSchema = new Schema({
-    adminName : {
+const managerSchema = new Schema({
+    Name : {
         type: String,
         required: true,
     },
-    adminEmail: {
+    Email: {
         type: String,
         required: true
     },
-    adminPassword: {
+    Password: {
         type: String,
         required: true
     },
 },
 {timestamps: true}
 );
-adminSchema.pre("save", async function(next) {
-        this.adminPassword = await hash(this.adminPassword,10)
+managerSchema.pre("save", async function(next) {
+        this.Password = await hash(this.Password,10)
         next()   
 })
 
-export default model("admin", adminSchema)
+export default model("managers", managerSchema)
