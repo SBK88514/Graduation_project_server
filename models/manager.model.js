@@ -3,23 +3,29 @@ import { model, Schema } from "mongoose";
 
 const managerSchema = new Schema(
   {
-    Name: {
+    manager_name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    manager_email: {
       type: String,
       required: true,
     },
-    Email: {
+    manager_password: {
       type: String,
       required: true,
     },
-    Password: {
+    permission: {
       type: String,
-      required: true,
+      default: "Manager",
+      enum: ["Admin", "Manager"],
     },
   },
   { timestamps: true }
 );
 managerSchema.pre("save", async function (next) {
-  this.Password = await hash(this.Password, 10);
+  this.manager_password = await hash(this.manager_password, 10);
   next();
 });
 

@@ -1,17 +1,24 @@
 import express from "express";
 import { config } from "dotenv";
 import mongoDB from "./database/connectDB.js";
-
+import cors from "cors";
 config();
 mongoDB();
 
 const app = express();
 app.use(express.json());
 
-import managerRouter from "./routers/manager.router.js";
 import issuesRouter from "./routers/issues.routter.js";
+import usersRouter from "./routers/users.router.js";
 
-app.use("/manager", managerRouter);
+app.use(
+  cors({
+    credentials: true,
+    optionsSuccessStatus: 200,
+    origin: ["http://localhost:5173"],
+  })
+);
+app.use("/users", usersRouter);
 app.use("/issues", issuesRouter);
 
 const port = 3000;
