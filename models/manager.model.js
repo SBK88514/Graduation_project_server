@@ -16,7 +16,7 @@ const managerSchema = new Schema(
       type: String,
       required: true,
     },
-    premission: {
+    permission: {
       type: String,
       default: "Manager",
       enum: ["Admin", "Manager"],

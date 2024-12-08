@@ -7,10 +7,10 @@ import jwt from "jsonwebtoken";
 export default {
   signUp: async (req, res) => {
     try {
-      const { managerName, managerEmail, managerPassword, premission } =
+      const { manager_name, manager_email, manager_password, permission } =
         req.body;
 
-      if (!managerName || !managerEmail || !managerPassword || !premission) {
+      if (!manager_name || !manager_email || !manager_password || !permission) {
         throw new Error("All fields are required!");
       }
 
@@ -36,14 +36,17 @@ export default {
 
   signIn: async (req, res) => {
     try {
-      const { managerEmail, managerPassword } = req.body;
+      const { manager_email, manager_password } = req.body;
       const manager = await managerModel.findOne({
-        managerEmail: managerEmail,
+        manager_email: manager_email,
       });
       if (!manager) throw new Error("the manager is not exist");
 
-      const isPassworvalid = compare(managerPassword, manager.managerPassword);
-      if (!isPassworvalid) throw new Error("the password not valid");
+      const isPasswordValid = compare(
+        manager_password,
+        manager.manager_password
+      );
+      if (!isPasswordValid) throw new Error("the password not valid");
 
       const token = jwt.sign({ ...manager }, process.env.JWT_SECRET, {
         expiresIn: 60 * 1 * 1,
@@ -62,7 +65,7 @@ export default {
       console.log(error);
       res.status(401).json({
         success: false,
-        massege: "not Success Login manager",
+        massage: "not Success Login manager",
       });
     }
   },
