@@ -5,6 +5,6 @@ const router = Router();
 const { signIn, signUp } = queries;
 
 router.post("/signin", signIn);
-router.post("/signin", signUp);
+router.post("/signUn", signUp);
 
 export default router;

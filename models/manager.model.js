@@ -1,6 +1,7 @@
 import { hash } from "bcrypt";
 import { model, Schema } from "mongoose";
 
+
 const managerSchema = new Schema(
     {
         Name: {
