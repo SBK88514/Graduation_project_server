@@ -5,8 +5,12 @@ import pLimit from "p-limit";
 export default {
   addIssues: async (req, res) => {
     try {
-      const { issue_building, issue_floor, issue_apartment, issue_description } =
-        req.body;
+      const {
+        issue_building,
+        issue_floor,
+        issue_apartment,
+        issue_description,
+      } = req.body;
 
       if (
         !issue_building ||
@@ -24,12 +28,11 @@ export default {
         limit(async () => await cloudinary.uploader.upload(file.path))
       );
 
-      
       const results = await Promise.all(images);
-      
+
       req.body.issue_images = results.map((result) => result.secure_url);
-      
-      console.log(req.body)
+
+      console.log(req.body);
       const issue = await issueModel.create(req.body);
 
       res.status(200).json({

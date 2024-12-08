@@ -2,8 +2,6 @@ import express from "express";
 import { config } from "dotenv";
 import mongoDB from "./database/connectDB.js";
 
-
-
 config();
 mongoDB();
 
