@@ -69,6 +69,22 @@ export default {
       });
     }
   },
+
+  Auth: async (req, res) => {
+    try {
+      res.status(200).json({
+        success: true,
+        message: "Success Auth User",
+        user: req.user,
+      });
+    } catch (error) {
+      res.status(401).json({
+        success: false,
+        message: "not Success Auth User",
+        error: error.message || error,
+      });
+    }
+  },
   update: async (req, res) => {
     try {
       const { id } = req.params;
