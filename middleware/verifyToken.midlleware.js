@@ -11,7 +11,7 @@ function verifyToken(req, res, next) {
         if (!decode) throw new Error("Token Not Valid")
 
         req.user = decode;
-        // console.log(decode)
+        console.log(decode)
 
         next();
 

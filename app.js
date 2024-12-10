@@ -2,6 +2,7 @@ import express from "express";
 import { config } from "dotenv";
 import mongoDB from "./database/connectDB.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 config();
 mongoDB();
 
@@ -18,6 +19,7 @@ app.use(
     origin: ["http://localhost:5173"],
   })
 );
+app.use(cookieParser())
 app.use("/users", usersRouter);
 // app.use("/issues", issuesRouter);
 

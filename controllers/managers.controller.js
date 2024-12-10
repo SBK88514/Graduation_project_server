@@ -7,10 +7,10 @@ import jwt from "jsonwebtoken";
 export default {
   signUp: async (req, res) => {
     try {
-      const { manager_name, manager_email, manager_password, permission } =
+      const { manager_name, manager_email, manager_password } =
         req.body;
 
-      if (!manager_name || !manager_email || !manager_password || !permission) {
+      if (!manager_name || !manager_email || !manager_password ) {
         throw new Error("All fields are required!");
       }
 
@@ -42,14 +42,14 @@ export default {
       });
       if (!manager) throw new Error("the manager is not exist");
 
-      const isPasswordValid = compare(
+      const isPasswordValid = await compare(
         manager_password,
         manager.manager_password
       );
       if (!isPasswordValid) throw new Error("the password not valid");
 
       const token = jwt.sign({ ...manager }, process.env.JWT_SECRET, {
-        expiresIn: 60 * 1 * 1,
+        expiresIn: 60 * 60 * 1 
       });
       res.cookie("token", token, {
         httpOnly: true,
