@@ -9,7 +9,7 @@ mongoDB();
 const app = express();
 app.use(express.json());
 
-// import issuesRouter from "./routers/issues.routter.js";
+import issuesRouter from "./routers/issues.routter.js";
 import usersRouter from "./routers/users.router.js";
 
 app.use(
@@ -19,9 +19,9 @@ app.use(
     origin: ["http://localhost:5173"],
   })
 );
-app.use(cookieParser())
+app.use(cookieParser());
 app.use("/users", usersRouter);
-// app.use("/issues", issuesRouter);
+app.use("/issues", issuesRouter);
 
 const port = 3000;
 app.listen(port, () => console.log(`server is running on port ${port}`));
