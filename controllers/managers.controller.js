@@ -74,7 +74,7 @@ export default {
       res.status(200).json({
         success: true,
         message: "Success Auth User",
-        user: req.user,
+        user: req.user._doc,
       });
       console.log(req.user);
     } catch (error) {
