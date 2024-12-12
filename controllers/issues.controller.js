@@ -48,4 +48,21 @@ export default {
       });
     }
   },
+  getAllIssues: async (req, res) => {
+    try {
+      const allIssues = await issueModel.find();
+      res.status(200).json({
+        success: true,
+        message: true,
+        data: allIssues 
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        success: false,
+        message: false,
+        error: error || error.message,
+      });
+    }
+  },
 };

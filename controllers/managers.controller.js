@@ -7,10 +7,9 @@ import jwt from "jsonwebtoken";
 export default {
   signUp: async (req, res) => {
     try {
-      const { manager_name, manager_email, manager_password } =
-        req.body;
+      const { manager_name, manager_email, manager_password } = req.body;
 
-      if (!manager_name || !manager_email || !manager_password ) {
+      if (!manager_name || !manager_email || !manager_password) {
         throw new Error("All fields are required!");
       }
 
@@ -49,7 +48,7 @@ export default {
       if (!isPasswordValid) throw new Error("the password not valid");
 
       const token = jwt.sign({ ...manager }, process.env.JWT_SECRET, {
-        expiresIn: 60 * 60 * 1 
+        expiresIn: 60 * 60 * 60,
       });
       res.cookie("token", token, {
         httpOnly: true,
@@ -77,12 +76,26 @@ export default {
         message: "Success Auth User",
         user: req.user,
       });
+      console.log(req.user);
     } catch (error) {
       res.status(401).json({
         success: false,
         message: "not Success Auth User",
         error: error.message || error,
       });
+    }
+  },
+  logOut: async function (req, res) {
+    try {
+      res.clearCookie("token", {
+        secure: true,
+        httpOnly: true,
+      });
+
+      return res.json({ success: true, message: "success to signout" });
+    } catch (error) {
+      console.log(error);
+      return res.json({ success: false, message: "not success to signout" });
     }
   },
   update: async (req, res) => {
@@ -98,7 +111,7 @@ export default {
         managerUpdated,
       });
     } catch (error) {
-      res.status(401).json({
+      res.status(500).json({
         success: false,
         message: false,
         error: error || error.message,
@@ -129,7 +142,7 @@ export default {
       res.status(200).json({
         success: true,
         message: true,
-        allManagers,
+        data: allManagers,
       });
     } catch (error) {
       res.status(200).json({
