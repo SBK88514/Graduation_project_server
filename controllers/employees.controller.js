@@ -329,12 +329,29 @@ export default {
         message: true,
         data: allEmployees,
       });
+
+      // const { page = 1 , limit = 4 } = req.query;
+
+      // const count = await employeeModel.countDocuments();
+
+      //  const skip = (page - 1) * limit
+
+      // const allEmployees = await employeeModel.find().skip(skip).limit(limit);
+      // console.log(allEmployees)
+      // res.status(200).json({
+      //   success: true,
+      //   message: true,
+      //   allEmployees,
+      //   count
+      // });
+      
     } catch (error) {
       res.status(200).json({
         success: false,
         message: false,
         error: error || error.message,
       });
+      
     }
   },
 };
