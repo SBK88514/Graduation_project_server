@@ -11,6 +11,7 @@ const managerSchema = new Schema(
     manager_email: {
       type: String,
       required: true,
+      unique: true,
     },
     manager_password: {
       type: String,

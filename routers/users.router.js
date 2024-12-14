@@ -3,7 +3,16 @@ import queries from "../controllers/managers.controller.js";
 import queriesEmployees from "../controllers/employees.controller.js";
 import verifyToken from "../middleware/verifyToken.midlleware.js";
 
-const { signIn, signUp, update, deleteManager, getAllManagers, Auth, logOut} = queries;
+const {
+  signIn,
+  signUp,
+  update,
+  deleteManager,
+  getAllManagers,
+  Auth,
+  logOut,
+  autocompleteManager,
+} = queries;
 const {
   employeeSignIn,
   employeeSignUp,
@@ -16,12 +25,14 @@ const router = Router();
 
 //managers
 router.post("/manager/signin", signIn);
-router.get("/auth",verifyToken,Auth)
+router.get("/auth", verifyToken, Auth);
 router.post("/manager/signup", signUp);
 router.put("/manager/update/:id", update);
 router.delete("/manager/delete/:id", deleteManager);
 router.get("/manager/getallmanagers", getAllManagers);
-router.get("/manager/logout",logOut)
+router.get("/manager/logout", logOut);
+// router.get("/searchmanager",searchManager)
+router.get("/autocomplete", autocompleteManager);
 
 //employees
 router.post("/employee/signin", employeeSignIn);
