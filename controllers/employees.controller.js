@@ -323,27 +323,21 @@ export default {
   },
   getAllEmployees: async (req, res) => {
     try {
-      const allEmployees = await employeeModel.find();
+
+      const { page = 1 , limit = 4 } = req.query;
+
+      const count = await employeeModel.countDocuments();
+
+      const skip = (page - 1) * limit
+
+      const allEmployees = await employeeModel.find().skip(skip).limit(limit);
+      console.log(allEmployees)
       res.status(200).json({
         success: true,
         message: true,
-        data: allEmployees,
+        allEmployees,
+        count
       });
-
-      // const { page = 1 , limit = 4 } = req.query;
-
-      // const count = await employeeModel.countDocuments();
-
-      //  const skip = (page - 1) * limit
-
-      // const allEmployees = await employeeModel.find().skip(skip).limit(limit);
-      // console.log(allEmployees)
-      // res.status(200).json({
-      //   success: true,
-      //   message: true,
-      //   allEmployees,
-      //   count
-      // });
       
     } catch (error) {
       res.status(200).json({
