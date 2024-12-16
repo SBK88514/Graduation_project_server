@@ -63,6 +63,7 @@ export default {
         message: true,
         data: allIssues,
         count:count 
+
       });
     } catch (error) {
       console.log(error);

@@ -261,7 +261,7 @@ export default {
       }
       const newEmployee = await employeeModel.create(employee);
       const token = jwt.sign({ ...newEmployee }, process.env.JWT_SECRET, {
-        expiresIn: 60 * 1 * 1,
+        expiresIn: 60 * 60* 60,
       });
       res.cookie("token", token, {
         httpOnly: true,
