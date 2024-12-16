@@ -50,11 +50,20 @@ export default {
   },
   getAllIssues: async (req, res) => {
     try {
-      const allIssues = await issueModel.find();
+
+      const { page = 1 , limit = 4 } = req.query;
+      
+      const count = await issueModel.countDocuments();
+      
+      const skip = (page - 1) * limit
+      
+      const allIssues = await issueModel.find().skip(skip).limit(limit);
       res.status(200).json({
         success: true,
         message: true,
-        data: allIssues 
+        data: allIssues,
+        count:count 
+
       });
     } catch (error) {
       console.log(error);

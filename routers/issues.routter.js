@@ -6,5 +6,4 @@ const { addIssues, getAllIssues } = queries;
 
 router.post("/addIssues", upload.array("issue_images", 12), addIssues);
 router.get("/getallissues", getAllIssues);
-
 export default router;
