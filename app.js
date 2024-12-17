@@ -11,7 +11,9 @@ app.use(express.json());
 
 import issuesRouter from "./routers/issues.routter.js";
 import usersRouter from "./routers/users.router.js";
-import generalRouter from "./routers/general.router.js"
+import professionsRouter from "./routers/profession.router.js";
+import generalRouter from "./routers/general.router.js";
+
 app.use(
   cors({
     credentials: true,
@@ -22,6 +24,7 @@ app.use(
 app.use(cookieParser());
 app.use("/users", usersRouter);
 app.use("/issues", issuesRouter);
+app.use("/professions", professionsRouter);
 app.use("/general", generalRouter);
 
 const port = 3000;
