@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import { hash } from "bcrypt";
 
 const employeeSchema = new Schema(
@@ -15,6 +15,10 @@ const employeeSchema = new Schema(
     employeePassword: {
       type: String,
       required: true,
+    },
+    employeeId: {
+      ref: "professions",
+      type: mongoose.Schema.Types.ObjectId,
     },
     verify: {
       type: Boolean,

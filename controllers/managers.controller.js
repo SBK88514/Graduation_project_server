@@ -139,20 +139,18 @@ export default {
   },
   getAllManagers: async (req, res) => {
     try {
-
-      const { page = 1 , limit = 4 } = req.query;
+      const { page = 1, limit = 4 } = req.query;
 
       const count = await managerModel.countDocuments();
 
-      const skip = (page - 1) * limit
-      
+      const skip = (page - 1) * limit;
+
       const allManagers = await managerModel.find().skip(skip).limit(limit);
       res.status(200).json({
         success: true,
         message: true,
-        data:allManagers,
-        count:count
-
+        data: allManagers,
+        count: count,
       });
     } catch (error) {
       res.status(200).json({
@@ -203,7 +201,7 @@ export default {
       pipeline.push({ $limit: 7 });
       pipeline.push({
         $project: {
-          _id: 0,
+          _id: 1,
           score: { $meta: "searchScore" },
           manager_email: 1,
           manager_name: 1,

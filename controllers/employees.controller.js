@@ -261,7 +261,7 @@ export default {
       }
       const newEmployee = await employeeModel.create(employee);
       const token = jwt.sign({ ...newEmployee }, process.env.JWT_SECRET, {
-        expiresIn: 60 * 60* 60,
+        expiresIn: 60 * 60 * 60,
       });
       res.cookie("token", token, {
         httpOnly: true,
@@ -323,29 +323,30 @@ export default {
   },
   getAllEmployees: async (req, res) => {
     try {
-
-      const { page = 1 , limit = 4 } = req.query;
+      const { page = 1, limit = 4 } = req.query;
 
       const count = await employeeModel.countDocuments();
 
-      const skip = (page - 1) * limit
+      const skip = (page - 1) * limit;
 
-      const allEmployees = await employeeModel.find().skip(skip).limit(limit);
-      console.log(allEmployees)
+      const allEmployees = await employeeModel
+        .find()
+        .populate("employeeId")
+        .skip(skip)
+        .limit(limit);
+      console.log(allEmployees);
       res.status(200).json({
         success: true,
         message: true,
         allEmployees,
-        count
+        count,
       });
-      
     } catch (error) {
       res.status(200).json({
         success: false,
         message: false,
         error: error || error.message,
       });
-      
     }
   },
 };
