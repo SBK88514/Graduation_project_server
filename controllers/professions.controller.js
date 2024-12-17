@@ -3,12 +3,20 @@ import professionsModal from "../models/professions.modal.js";
 export default {
   getAllProfessions: async (req, res) => {
     try {
-      const professions = await professionsModal.find();
+
+      const { page = 1, limit = 4 } = req.query;
+      
+      const count = await professionsModal.countDocuments();
+      
+      const skip = (page - 1) * limit;
+      
+      const professions = await professionsModal.find().skip(skip).limit(limit);
 
       res.status(200).json({
         success: true,
         message: true,
         data: professions,
+        count: count,
       });
     } catch (error) {
       res.status(200).json({
