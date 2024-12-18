@@ -74,4 +74,45 @@ export default {
       });
     }
   },
+  autocompleteIssue: async (req, res) => {
+      const INDEX_NAME = "autocomplete";
+      try {
+        const SearchQuery = req.query.query;
+  
+        const pipeline = [];
+        pipeline.push({
+          $search: {
+            index: INDEX_NAME,
+            autocomplete: {
+              query: SearchQuery,
+              path: "issue_building",
+              tokenOrder: "sequential",
+            },
+          },
+        });
+        pipeline.push({ $limit: 7 });
+        pipeline.push({
+          $project: {
+            _id: 1,
+            score: { $meta: "searchScore" },
+            issue_building: 1,
+            issue_floor: 1,
+            issue_apartment: 1,
+            issue_description:1,
+            issue_images:1
+          },
+        });
+        const result = await issueModel.aggregate(pipeline).sort({ score: -1 });
+        res.json({
+          success: true,
+          message: "the issue is found successfully",
+          result,
+        });
+      } catch (error) {
+        res.json({
+          success: false,
+          message: "the issue is not found successfully",
+        });
+      }
+    },
 };
