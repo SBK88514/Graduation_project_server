@@ -1,11 +1,11 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Mongoose, Schema } from "mongoose";
 
 const issueSchema = new Schema(
   {
     issue_building: {
       type: String,
       default: "",
-      unique: true
+      unique: true,
     },
     issue_floor: {
       type: Number,
@@ -26,6 +26,7 @@ const issueSchema = new Schema(
       },
     ],
   },
+
   { timestamps: true }
 );
 
