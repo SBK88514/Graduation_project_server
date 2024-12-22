@@ -4,7 +4,7 @@ export default {
   getAllProfessions: async (req, res) => {
     try {
 
-      const { page = 1, limit = 4 } = req.query;
+      const { page, limit } = req.query;
       
       const count = await professionsModal.countDocuments();
       
