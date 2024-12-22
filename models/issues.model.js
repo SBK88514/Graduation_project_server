@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 const issueSchema = new Schema(
   {
@@ -25,6 +25,15 @@ const issueSchema = new Schema(
         default: "",
       },
     ],
+    issue_urgency: {
+      type: String,
+      enum: ["high", "medium", "low"],
+      default: "Low",
+    },
+    issue_profession:{
+      ref: "professions",
+      type: mongoose.Schema.Types.ObjectId
+    },
   },
   { timestamps: true }
 );

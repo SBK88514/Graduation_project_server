@@ -10,17 +10,28 @@ export default {
         issue_floor,
         issue_apartment,
         issue_description,
+        issue_urgency,
+        issue_profession,
       } = req.body;
 
+      console.log(1);
+      console.log("Request body:", req.body);
+      console.log(2);
+      console.log("Request files:", req.files);
+      console.log(3);
       if (
         !issue_building ||
         !issue_floor ||
         !issue_apartment ||
         !issue_description ||
+        !issue_urgency ||
+        !issue_profession ||
         !req.files ||
         req.files.length === 0
       )
         throw new Error("all fields required!");
+      
+      
 
       const limit = pLimit(5);
 
@@ -51,13 +62,13 @@ export default {
   getAllIssues: async (req, res) => {
     try {
 
-      const { page = 1 , limit = 4 } = req.query;
+      const { page  , limit } = req.query;
       
       const count = await issueModel.countDocuments();
       
       const skip = (page - 1) * limit
       
-      const allIssues = await issueModel.find().skip(skip).limit(limit);
+      const allIssues = await issueModel.find().populate("issue_profession").skip(skip).limit(limit);
       res.status(200).json({
         success: true,
         message: true,
