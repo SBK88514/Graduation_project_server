@@ -5,7 +5,7 @@ const issueSchema = new Schema(
     issue_building: {
       type: String,
       default: "",
-      unique: true
+      unique: true,
     },
     issue_floor: {
       type: Number,
@@ -40,6 +40,7 @@ const issueSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId
     },
   },
+
   { timestamps: true }
 );
 

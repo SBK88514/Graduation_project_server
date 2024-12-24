@@ -12,13 +12,7 @@ export default {
         issue_description,
         issue_urgency,
         issue_profession,
-      } = req.body;
-
-      console.log(1);
-      console.log("Request body:", req.body);
-      console.log(2);
-      console.log("Request files:", req.files);
-      console.log(3);
+      } = req.body 
       if (
         !issue_building ||
         !issue_floor ||
@@ -61,6 +55,8 @@ export default {
   },
   getAllIssues: async (req, res) => {
     try {
+      const { page = 1, limit = 4 } = req.query;
+
 
       const { page  , limit } = req.query;
       
@@ -69,12 +65,12 @@ export default {
       const skip = (page - 1) * limit
       
       const allIssues = await issueModel.find().populate("issue_profession").skip(skip).limit(limit);
+
       res.status(200).json({
         success: true,
         message: true,
         data: allIssues,
-        count:count 
-
+        count: count,
       });
     } catch (error) {
       console.log(error);
@@ -86,32 +82,35 @@ export default {
     }
   },
   autocompleteIssue: async (req, res) => {
-      const INDEX_NAME = "autocomplete";
-      try {
-        const SearchQuery = req.query.query;
-  
-        const pipeline = [];
-        pipeline.push({
-          $search: {
-            index: INDEX_NAME,
-            autocomplete: {
-              query: SearchQuery,
-              path: "issue_building",
-              tokenOrder: "sequential",
-            },
+    const INDEX_NAME = "autocomplete";
+    try {
+      const SearchQuery = req.query.query;
+
+      const pipeline = [];
+      pipeline.push({
+        $search: {
+          index: INDEX_NAME,
+          autocomplete: {
+            query: SearchQuery,
+            path: "issue_building",
+            tokenOrder: "sequential",
           },
-        });
-        pipeline.push({ $limit: 7 });
-        pipeline.push({
-          $project: {
-            _id: 1,
-            score: { $meta: "searchScore" },
-            issue_building: 1,
-            issue_floor: 1,
-            issue_apartment: 1,
-            issue_description:1,
-            issue_images:1
-          },
+
+        },
+      });
+      pipeline.push({ $limit: 7 });
+      pipeline.push({
+        $project: {
+          _id: 1,
+          score: { $meta: "searchScore" },
+          issue_building: 1,
+          issue_floor: 1,
+          issue_apartment: 1,
+          issue_description: 1,
+          issue_images: 1,
+        },
+      });
+   
         });
         const result = await issueModel.aggregate(pipeline).sort({ score: -1 });
         res.json({
@@ -148,4 +147,5 @@ export default {
         });
       }
     },
+
 };
