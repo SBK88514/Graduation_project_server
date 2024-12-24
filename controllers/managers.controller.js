@@ -59,7 +59,7 @@ export default {
       res.status(200).json({
         success: true,
         message: "Success Login manager",
-        manager,
+        data: manager,
       });
     } catch (error) {
       console.log(error);

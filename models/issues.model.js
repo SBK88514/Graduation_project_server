@@ -5,7 +5,7 @@ const issueSchema = new Schema(
     issue_building: {
       type: String,
       default: "",
-      unique: true
+      unique: true,
     },
     issue_floor: {
       type: Number,
@@ -30,9 +30,13 @@ const issueSchema = new Schema(
       enum: ["high", "medium", "low"],
       default: "Low",
     },
-    issue_profession:{
+    issue_profession: {
       ref: "professions",
-      type: mongoose.Schema.Types.ObjectId
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    employees: {
+      ref: "employees",
+      type: mongoose.Schema.Types.ObjectId,
     },
   },
   { timestamps: true }
