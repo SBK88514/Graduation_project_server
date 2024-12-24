@@ -126,4 +126,26 @@ export default {
         });
       }
     },
+  updateIssue: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const issue = req.body;
+        const issueUpdated = await issueModel.findByIdAndUpdate(
+          id,
+          issue,
+          { new: true }
+        );
+        res.status(200).json({
+          success: true,
+          message: true,
+          issueUpdated,
+        });
+      } catch (error) {
+        res.status(401).json({
+          success: false,
+          message: false,
+          error: error || error.message,
+        });
+      }
+    },
 };
