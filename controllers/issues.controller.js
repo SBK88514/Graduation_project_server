@@ -1,3 +1,4 @@
+import employeeModel from "../models/employee.model.js";
 import issueModel from "../models/issues.model.js";
 import cloudinary from "../service/cloudinary.service.js";
 import pLimit from "p-limit";
@@ -24,8 +25,6 @@ export default {
         req.files.length === 0
       )
         throw new Error("all fields required!");
-      
-      
 
       const limit = pLimit(5);
 
@@ -55,16 +54,20 @@ export default {
   },
   getAllIssues: async (req, res) => {
     try {
-      const { page = 1, limit = 4 } = req.query;
+
+      const { page, limit } = req.query;
 
 
-      const { page  , limit } = req.query;
-      
       const count = await issueModel.countDocuments();
-      
-      const skip = (page - 1) * limit
-      
-      const allIssues = await issueModel.find().populate("issue_profession").skip(skip).limit(limit);
+
+
+      const skip = (page - 1) * limit;
+
+      const allIssues = await issueModel
+        .find()
+        .populate(["issue_profession", "employees"])
+        .skip(skip)
+        .limit(limit);
 
       res.status(200).json({
         success: true,
@@ -110,21 +113,55 @@ export default {
           issue_images: 1,
         },
       });
-   
-        });
-        const result = await issueModel.aggregate(pipeline).sort({ score: -1 });
-        res.json({
-          success: true,
-          message: "the issue is found successfully",
-          result,
-        });
-      } catch (error) {
-        res.json({
-          success: false,
-          message: "the issue is not found successfully",
-        });
-      }
-    },
+
+      const result = await issueModel.aggregate(pipeline).sort({ score: -1 });
+      res.json({
+        success: true,
+        message: "the issue is found successfully",
+        result,
+      });
+    } catch (error) {
+      res.json({
+        success: false,
+        message: "the issue is not found successfully",
+      });
+    }
+  },
+ associateEmployeeWithIssue: async (req, res) => {
+    try {
+      const { employees, issues } = req.body;
+      console.log(employees, issues);
+      const employeeUpdated = await issueModel.findByIdAndUpdate(
+        issues,
+        { employees },
+        {
+          new: true,
+        }
+      );
+      const issueUpdated = await employeeModel.findByIdAndUpdate(
+        employees,
+        { issues },
+        {
+          new: true,
+        }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: true,
+        data: issueUpdated,
+        data: employeeUpdated,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: false,
+        error: error || error.message,
+      });
+    }
+  },
+
+  
   updateIssue: async (req, res) => {
       try {
         const { id } = req.params;
@@ -147,5 +184,4 @@ export default {
         });
       }
     },
-
 };

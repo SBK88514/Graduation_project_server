@@ -30,6 +30,7 @@ const issueSchema = new Schema(
       enum: ["high", "medium", "low"],
       default: "Low",
     },
+
     issue_status: {
       type: String,
       enum: ["New", "In process", "Done"],
@@ -37,7 +38,11 @@ const issueSchema = new Schema(
     },
     issue_profession:{
       ref: "professions",
-      type: mongoose.Schema.Types.ObjectId
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    employees: {
+      ref: "employees",
+      type: mongoose.Schema.Types.ObjectId,
     },
   },
 

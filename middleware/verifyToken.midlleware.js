@@ -5,6 +5,7 @@ function verifyToken(req, res, next) {
         const { token } = req.cookies;
 
         if (!token) throw new Error("Token not Exist");
+        console.log(token)
 
         const decode = jwt.verify(token, process.env.JWT_SECRET);
 

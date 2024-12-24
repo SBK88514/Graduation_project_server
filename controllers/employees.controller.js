@@ -244,7 +244,15 @@ export default {
       `);
     }
   },
+  getEmployeeById: async (req,res) => {
+    try{
+      const {id} = req.body;
+      await find
 
+    }catch(error){
+      console.log(error)
+    }
+  },
   employeeSignIn: async (req, res) => {
     try {
       const { employeeEmail, employeePassword } = req.body;
@@ -252,33 +260,35 @@ export default {
       if (!employee) {
         throw new Error("Email not exist");
       }
-      const isPassworvalid = compare(
+      const isPassworvalid = await compare(
         employeePassword,
         employee.employeePassword
       );
+      console.log(employeePassword);
+      console.log(employee.employeePassword);
       if (!isPassworvalid) {
         throw new Error("the password not match");
       }
-      const newEmployee = await employeeModel.create(employee);
-      const token = jwt.sign({ ...newEmployee }, process.env.JWT_SECRET, {
-        expiresIn: 60 * 60 * 60,
+
+      const token = jwt.sign({ ...employee }, process.env.JWT_SECRET, {
+        expiresIn: 60 * 60 * 60 * 1,
       });
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        maxAge: 1000 * 60 * 1 * 1,
+        maxAge: 1000 * 60 * 60 * 1,
       });
 
       res.status(200).json({
         success: true,
         message: true,
-        error: error.message || error,
+        data: employee,
       });
     } catch (error) {
       res.status(401).json({
-        success: true,
-        message: true,
-        error: error,
+        success: false,
+        message: false,
+        error: error.message || error,
       });
     }
   },
