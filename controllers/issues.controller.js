@@ -10,17 +10,22 @@ export default {
         issue_floor,
         issue_apartment,
         issue_description,
-      } = req.body;
-
+        issue_urgency,
+        issue_profession,
+      } = req.body 
       if (
         !issue_building ||
         !issue_floor ||
         !issue_apartment ||
         !issue_description ||
+        !issue_urgency ||
+        !issue_profession ||
         !req.files ||
         req.files.length === 0
       )
         throw new Error("all fields required!");
+      
+      
 
       const limit = pLimit(5);
 
@@ -52,14 +57,15 @@ export default {
     try {
       const { page = 1, limit = 4 } = req.query;
 
+
+      const { page  , limit } = req.query;
+      
       const count = await issueModel.countDocuments();
+      
+      const skip = (page - 1) * limit
+      
+      const allIssues = await issueModel.find().populate("issue_profession").skip(skip).limit(limit);
 
-      const skip = (page - 1) * limit;
-
-      const allIssues = await issueModel
-        .find()
-        .skip(skip)
-        .limit(limit);
       res.status(200).json({
         success: true,
         message: true,
@@ -89,6 +95,7 @@ export default {
             path: "issue_building",
             tokenOrder: "sequential",
           },
+
         },
       });
       pipeline.push({ $limit: 7 });
@@ -103,17 +110,42 @@ export default {
           issue_images: 1,
         },
       });
-      const result = await issueModel.aggregate(pipeline).sort({ score: -1 });
-      res.json({
-        success: true,
-        message: "the issue is found successfully",
-        result,
-      });
-    } catch (error) {
-      res.json({
-        success: false,
-        message: "the issue is not found successfully",
-      });
-    }
-  },
+   
+        });
+        const result = await issueModel.aggregate(pipeline).sort({ score: -1 });
+        res.json({
+          success: true,
+          message: "the issue is found successfully",
+          result,
+        });
+      } catch (error) {
+        res.json({
+          success: false,
+          message: "the issue is not found successfully",
+        });
+      }
+    },
+  updateIssue: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const issue = req.body;
+        const issueUpdated = await issueModel.findByIdAndUpdate(
+          id,
+          issue,
+          { new: true }
+        );
+        res.status(200).json({
+          success: true,
+          message: true,
+          issueUpdated,
+        });
+      } catch (error) {
+        res.status(401).json({
+          success: false,
+          message: false,
+          error: error || error.message,
+        });
+      }
+    },
+
 };
