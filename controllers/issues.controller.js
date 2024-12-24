@@ -13,13 +13,7 @@ export default {
         issue_description,
         issue_urgency,
         issue_profession,
-      } = req.body;
-
-      console.log(1);
-      console.log("Request body:", req.body);
-      console.log(2);
-      console.log("Request files:", req.files);
-      console.log(3);
+      } = req.body 
       if (
         !issue_building ||
         !issue_floor ||
@@ -60,9 +54,12 @@ export default {
   },
   getAllIssues: async (req, res) => {
     try {
+
       const { page, limit } = req.query;
 
+
       const count = await issueModel.countDocuments();
+
 
       const skip = (page - 1) * limit;
 
@@ -71,6 +68,7 @@ export default {
         .populate(["issue_profession", "employees"])
         .skip(skip)
         .limit(limit);
+
       res.status(200).json({
         success: true,
         message: true,
@@ -100,6 +98,7 @@ export default {
             path: "issue_building",
             tokenOrder: "sequential",
           },
+
         },
       });
       pipeline.push({ $limit: 7 });
@@ -114,6 +113,7 @@ export default {
           issue_images: 1,
         },
       });
+
       const result = await issueModel.aggregate(pipeline).sort({ score: -1 });
       res.json({
         success: true,
@@ -127,7 +127,7 @@ export default {
       });
     }
   },
-  updateIssue: async (req, res) => {
+ associateEmployeeWithIssue: async (req, res) => {
     try {
       const { employees, issues } = req.body;
       console.log(employees, issues);
@@ -160,4 +160,28 @@ export default {
       });
     }
   },
+
+  
+  updateIssue: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const issue = req.body;
+        const issueUpdated = await issueModel.findByIdAndUpdate(
+          id,
+          issue,
+          { new: true }
+        );
+        res.status(200).json({
+          success: true,
+          message: true,
+          issueUpdated,
+        });
+      } catch (error) {
+        res.status(401).json({
+          success: false,
+          message: false,
+          error: error || error.message,
+        });
+      }
+    },
 };

@@ -30,7 +30,13 @@ const issueSchema = new Schema(
       enum: ["high", "medium", "low"],
       default: "Low",
     },
-    issue_profession: {
+
+    issue_status: {
+      type: String,
+      enum: ["New", "In process", "Done"],
+      default: "New",
+    },
+    issue_profession:{
       ref: "professions",
       type: mongoose.Schema.Types.ObjectId,
     },
@@ -39,6 +45,7 @@ const issueSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
     },
   },
+
   { timestamps: true }
 );
 
