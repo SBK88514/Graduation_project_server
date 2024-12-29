@@ -244,13 +244,22 @@ export default {
       `);
     }
   },
-  getEmployeeById: async (req,res) => {
-    try{
-      const {id} = req.body;
-      await find
-
-    }catch(error){
-      console.log(error)
+  getEmployeeById: async (req, res) => {
+    try {
+      const { id } = req.body;
+      const employee = await employeeModel.findById(id).populate("issues");
+      res.json({
+        success: true,
+        message: true,
+        data: employee.issues
+      });
+    } catch (error) {
+      console.log(error);
+      res.json({
+        success: false,
+        message: false,
+        error: error.message || error,
+      });
     }
   },
   employeeSignIn: async (req, res) => {
