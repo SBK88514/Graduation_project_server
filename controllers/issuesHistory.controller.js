@@ -1,7 +1,7 @@
 import issuesHistoryModel from "../models/issuesHistory.model.js";
 
 export default {
-  getAllIssues: async (req, res) => {
+  getAllHistories: async (req, res) => {
     try {
       const allhistories = await issuesHistoryModel.find();
 
