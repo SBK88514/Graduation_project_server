@@ -5,7 +5,6 @@ const issueHistorySchema = new Schema(
     issue_building: {
       type: String,
       default: "",
-      unique: true,
     },
     issue_floor: {
       type: Number,

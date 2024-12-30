@@ -3,10 +3,10 @@ import { config } from "dotenv";
 import mongoDB from "./database/connectDB.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import cron from "node-cron"
+import cron from "node-cron";
 
-cron.schedule('1 3 * * *', () => {
-  console.log('running a task every minute');
+cron.schedule("1 3 * * *", () => {
+  console.log("running a task every minute");
 });
 config();
 mongoDB();
@@ -31,7 +31,6 @@ app.use("/users", usersRouter);
 app.use("/issues", issuesRouter);
 app.use("/professions", professionsRouter);
 app.use("/general", generalRouter);
-
 
 const port = 3000;
 app.listen(port, () => console.log(`server is running on port ${port}`));
