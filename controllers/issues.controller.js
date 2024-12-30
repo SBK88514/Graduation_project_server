@@ -55,14 +55,28 @@ export default {
   },
   getAllIssues: async (req, res) => {
     try {
-      const { page, limit } = req.query;
+      const {
+        page,
+        limit,
+        search = "all",
+        status = "all",
+        profession = "all",
+      } = req.query;
 
-      const count = await issueModel.countDocuments();
+      const filterObject = {
+        ...(search !== "all" && { issue_urgency: search }),
+        ...(status !== "all" && { issue_status: status }),
+        ...(profession !== "all" && { issue_profession: profession }),
+      };
 
+      const count = await issueModel.countDocuments(filterObject);
+
+
+    
       const skip = (page - 1) * limit;
 
       const allIssues = await issueModel
-        .find()
+        .find(filterObject)
         .populate(["issue_profession", "employees"])
         .skip(skip)
         .limit(limit);
@@ -124,6 +138,7 @@ export default {
       });
     }
   },
+
 
   updateIssue: async (req, res) => {
     try {
@@ -209,6 +224,7 @@ export default {
       });
     }
   },
+
 
   allIssuesByProfession: async (req, res) => {
     try {
