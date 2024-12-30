@@ -1,6 +1,6 @@
 import mongoose, { model, Schema } from "mongoose";
 
-const issueSchema = new Schema(
+const issueHistorySchema = new Schema(
   {
     issue_building: {
       type: String,
@@ -27,7 +27,7 @@ const issueSchema = new Schema(
     issue_urgency: {
       type: String,
       enum: ["high", "medium", "low"],
-      default: "Low",
+      default: "low",
     },
 
     issue_status: {
@@ -40,13 +40,14 @@ const issueSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    employees: {
-      ref: "employees",
-      type: mongoose.Schema.Types.ObjectId,
-    },
+    // employees: {
+    //   ref: "employees",
+    //   type: mongoose.Schema.Types.ObjectId,
+    // },
+    //   },
   },
 
   { timestamps: true }
 );
 
-export default model("issues", issueSchema);
+export default model("issueshistories", issueHistorySchema);
