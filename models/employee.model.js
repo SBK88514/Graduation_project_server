@@ -24,10 +24,12 @@ const employeeSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    issues: {
-      ref: "issues",
-      type: mongoose.Schema.Types.ObjectId,
-    },
+    issues: [
+      {
+        ref: "issues",
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
   },
   { timestamps: true }
 );

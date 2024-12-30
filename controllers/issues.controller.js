@@ -1,5 +1,6 @@
 import employeeModel from "../models/employee.model.js";
 import issueModel from "../models/issues.model.js";
+import issuesHistoryModel from "../models/issuesHistory.model.js";
 import cloudinary from "../service/cloudinary.service.js";
 import pLimit from "p-limit";
 
@@ -70,6 +71,8 @@ export default {
 
       const count = await issueModel.countDocuments(filterObject);
 
+
+    
       const skip = (page - 1) * limit;
 
       const allIssues = await issueModel
@@ -135,39 +138,7 @@ export default {
       });
     }
   },
-  associateEmployeeWithIssue: async (req, res) => {
-    try {
-      const { employees, issues } = req.body;
-      console.log(employees, issues);
-      const employeeUpdated = await issueModel.findByIdAndUpdate(
-        issues,
-        { employees },
-        {
-          new: true,
-        }
-      );
-      const issueUpdated = await employeeModel.findByIdAndUpdate(
-        employees,
-        { issues },
-        {
-          new: true,
-        }
-      );
 
-      res.status(200).json({
-        success: true,
-        message: true,
-        data: issueUpdated,
-        data: employeeUpdated,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: false,
-        error: error || error.message,
-      });
-    }
-  },
 
   updateIssue: async (req, res) => {
     try {
@@ -183,6 +154,93 @@ export default {
       });
     } catch (error) {
       res.status(401).json({
+        success: false,
+        message: false,
+        error: error || error.message,
+      });
+    }
+  },
+  deleteAndCreateIssue: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const previousIssue = await issueModel.findByIdAndDelete(id);
+      // const issueCreated= await issuesHistoryModel.create(previousIssue)
+      const issueForHistory = {
+        issue_building: previousIssue.issue_building,
+        issue_floor: previousIssue.issue_floor,
+        issue_apartment: previousIssue.issue_apartment,
+        issue_description: previousIssue.issue_description,
+        issue_images: previousIssue.issue_images,
+        issue_urgency: previousIssue.issue_urgency,
+        issue_status: previousIssue.issue_status,
+        issue_profession: previousIssue.issue_profession,
+      };
+
+      const issueCreated = await issuesHistoryModel.create(issueForHistory);
+      res.status(200).json({
+        success: true,
+        message: true,
+        data: previousIssue,
+        data2: issueCreated,
+      });
+    } catch (error) {
+      res.status(401).json({
+        success: false,
+        message: false,
+        error: error || error.message,
+      });
+    }
+  },
+
+  //Client
+  associateEmployeeWithIssue: async (req, res) => {
+    try {
+      const { employees, issues } = req.body;
+      console.log(employees, issues);
+      const employeeUpdated = await issueModel.findByIdAndUpdate(
+        issues,
+        { employees },
+        {
+          new: true,
+        }
+      );
+
+      const issueUpdated = await employeeModel.updateOne(
+        { _id: employees },
+        { $addToSet: { issues } }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: true,
+        data: issueUpdated,
+        data2: employeeUpdated,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: false,
+        error: error || error.message,
+      });
+    }
+  },
+
+
+  allIssuesByProfession: async (req, res) => {
+    try {
+      const { id } = req.params;
+      console.log(id);
+      const allIssues = await issueModel
+        .find({ issue_profession: id })
+        .populate("employees");
+      console.log(allIssues);
+      res.json({
+        success: true,
+        message: true,
+        data: allIssues,
+      });
+    } catch (error) {
+      res.json({
         success: false,
         message: false,
         error: error || error.message,
