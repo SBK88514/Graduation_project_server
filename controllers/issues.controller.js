@@ -3,6 +3,7 @@ import issueModel from "../models/issues.model.js";
 import issuesHistoryModel from "../models/issuesHistory.model.js";
 import cloudinary from "../service/cloudinary.service.js";
 import pLimit from "p-limit";
+import transporter from "../service/nodemailer.service.js";
 
 export default {
   addIssues: async (req, res) => {
@@ -71,8 +72,6 @@ export default {
 
       const count = await issueModel.countDocuments(filterObject);
 
-
-    
       const skip = (page - 1) * limit;
 
       const allIssues = await issueModel
@@ -139,7 +138,6 @@ export default {
     }
   },
 
-
   updateIssue: async (req, res) => {
     try {
       const { id } = req.params;
@@ -174,9 +172,18 @@ export default {
         issue_urgency: previousIssue.issue_urgency,
         issue_status: previousIssue.issue_status,
         issue_profession: previousIssue.issue_profession,
+        employees: previousIssue.employees,
       };
 
       const issueCreated = await issuesHistoryModel.create(issueForHistory);
+    //   transporter.sendMail({
+    //       from: "biton123654@gmail.com",
+    //       to: `${employeeEmail}`,
+    //       subject: "Hello ✔",
+    //       text: "Hello world?",
+    //       html: `<div> ${}your issue has been successfully resolved</div>`
+    // })
+
       res.status(200).json({
         success: true,
         message: true,
@@ -225,14 +232,13 @@ export default {
     }
   },
 
-
   allIssuesByProfession: async (req, res) => {
     try {
       const { id } = req.params;
       console.log(id);
       const allIssues = await issueModel
         .find({ issue_profession: id })
-        .populate("employees");
+        .populate(["employees", "issue_profession"]);
       console.log(allIssues);
       res.json({
         success: true,
