@@ -3,6 +3,7 @@ import issueModel from "../models/issues.model.js";
 import issuesHistoryModel from "../models/issuesHistory.model.js";
 import cloudinary from "../service/cloudinary.service.js";
 import pLimit from "p-limit";
+import transporter from "../service/nodemailer.service.js";
 
 export default {
   addIssues: async (req, res) => {
@@ -53,6 +54,35 @@ export default {
       });
     }
   },
+
+  sendMailToManager: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const mail = await transporter.sendMail({
+        from: "biton123654@gmail.com",
+        to: "biton123654@gmail.com",
+        subject: "Hello ✔",
+        text: "Hello world?",
+        html: `<div> I am finished issue number${id},please chack it if it's all good
+         <a href="http://localhost:5173/#/allissues"">
+         click here
+         <a/>
+         </div>`,
+      });
+      res.json({
+        success: true,
+        message: true,
+        data: mail,
+      });
+    } catch (error) {
+      console.log(error);
+      res.json({
+        success: false,
+        message: false,
+        error: error || error.message,
+      });
+    }
+  },
   getAllIssues: async (req, res) => {
     try {
       const {
@@ -71,8 +101,6 @@ export default {
 
       const count = await issueModel.countDocuments(filterObject);
 
-
-    
       const skip = (page - 1) * limit;
 
       const allIssues = await issueModel
@@ -139,7 +167,6 @@ export default {
     }
   },
 
-
   updateIssue: async (req, res) => {
     try {
       const { id } = req.params;
@@ -177,6 +204,15 @@ export default {
       };
 
       const issueCreated = await issuesHistoryModel.create(issueForHistory);
+      // transporter.sendMail({
+      //   from: "biton123654@gmail.com",
+      //   to: `${employeeEmail}`,
+      //   subject: "Hello ✔",
+      //   text: "Hello world?",
+      //   html: "<div> your issue has been successfully resolved</div>"
+
+      // })
+
       res.status(200).json({
         success: true,
         message: true,
@@ -224,7 +260,6 @@ export default {
       });
     }
   },
-
 
   allIssuesByProfession: async (req, res) => {
     try {
