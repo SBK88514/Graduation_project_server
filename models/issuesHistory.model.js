@@ -40,11 +40,10 @@ const issueHistorySchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    // employees: {
-    //   ref: "employees",
-    //   type: mongoose.Schema.Types.ObjectId,
-    // },
-    //   },
+    employees: {
+      ref: "employees",
+      type: mongoose.Schema.Types.ObjectId,
+    },
   },
 
   { timestamps: true }
