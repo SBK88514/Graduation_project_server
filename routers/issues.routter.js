@@ -14,7 +14,7 @@ const {
   sendMailToManager
 } = queries;
 
-const { getAllHistories } = queriesHistory;
+const { getAllHistories, getHistoryById } = queriesHistory;
 
 router.post("/addIssues", upload.array("issue_images", 12), addIssues);
 router.get("/getallissues", getAllIssues);
@@ -28,5 +28,6 @@ router.get("/sendmailtoManager/:id",sendMailToManager)
 
 //issuesHistory
 router.get("/getallhistories", getAllHistories);
+router.get("/gethistorybyid/:id", getHistoryById)
 
 export default router;

@@ -21,4 +21,26 @@ export default {
       });
     }
   },
+  getHistoryById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const myIssues = await issuesHistoryModel
+        .find({
+          employees: id,
+        })
+        .populate("employees");
+      res.json({
+        success: true,
+        message: true,
+        data: myIssues,
+      });
+    } catch (error) {
+      console.log(error);
+      res.json({
+        success: false,
+        message: false,
+        error: error || error.message,
+      });
+    }
+  },
 };

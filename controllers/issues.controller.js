@@ -201,9 +201,11 @@ export default {
         issue_urgency: previousIssue.issue_urgency,
         issue_status: previousIssue.issue_status,
         issue_profession: previousIssue.issue_profession,
+        employees: previousIssue.employees,
       };
 
       const issueCreated = await issuesHistoryModel.create(issueForHistory);
+
       // transporter.sendMail({
       //   from: "biton123654@gmail.com",
       //   to: `${employeeEmail}`,
@@ -212,7 +214,6 @@ export default {
       //   html: "<div> your issue has been successfully resolved</div>"
 
       // })
-
       res.status(200).json({
         success: true,
         message: true,
@@ -267,7 +268,7 @@ export default {
       console.log(id);
       const allIssues = await issueModel
         .find({ issue_profession: id })
-        .populate("employees");
+        .populate(["employees", "issue_profession"]);
       console.log(allIssues);
       res.json({
         success: true,
