@@ -102,10 +102,20 @@ export default {
   update: async (req, res) => {
     try {
       const { id } = req.params;
-      const manager = req.body;
-      const managerUpdated = await managerModel.findByIdAndUpdate(id, manager, {
-        new: true,
-      });
+      const updates = req.body;
+
+      const manager = await managerModel.findById(id);
+      if (!manager) {
+        return res.status(404).json({
+          success: false,
+          message: "Manager not found",
+        });
+      }
+
+      Object.assign(manager, updates);
+
+      const managerUpdated = await manager.save();
+      
       res.status(200).json({
         success: true,
         message: true,

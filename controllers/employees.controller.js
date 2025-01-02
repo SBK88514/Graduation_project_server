@@ -357,8 +357,8 @@ export default {
       res.status(200).json({
         success: true,
         message: true,
-        allEmployees,
-        count,
+        data: allEmployees,
+        count: count,
       });
     } catch (error) {
       res.status(200).json({
