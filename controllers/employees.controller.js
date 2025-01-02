@@ -304,12 +304,20 @@ export default {
   updateEmployee: async (req, res) => {
     try {
       const { id } = req.params;
-      const employee = req.body;
-      const employeeUpdated = await employeeModel.findByIdAndUpdate(
-        id,
-        employee,
-        { new: true }
-      );
+      const updates = req.body;
+
+      const employee = await employeeModel.findById(id);
+      if (!employee) {
+        return res.status(404).json({
+          success: false,
+          message: "Employee not found",
+        });
+      }
+
+      Object.assign(employee, updates);
+
+      const employeeUpdated = await employee.save();
+
       res.status(200).json({
         success: true,
         message: true,
@@ -357,8 +365,8 @@ export default {
       res.status(200).json({
         success: true,
         message: true,
-        allEmployees,
-        count,
+        data: allEmployees,
+        count: count,
       });
     } catch (error) {
       res.status(200).json({
