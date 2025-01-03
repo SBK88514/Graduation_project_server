@@ -28,7 +28,7 @@ export default {
         .find({
           employees: id,
         })
-        .populate("employees");
+        .populate(["employees", "issue_profession"]);
       res.json({
         success: true,
         message: true,
