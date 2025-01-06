@@ -246,7 +246,7 @@ export default {
   },
   getEmployeeById: async (req, res) => {
     try {
-      const { id } = req.body;
+      const { id } = req.params;
       const employee = await employeeModel.findById(id).populate(["issues", "employeeId"]);
       res.json({
         success: true,
