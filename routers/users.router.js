@@ -34,7 +34,7 @@ router.get("/manager/getallmanagers", getAllManagers);
 router.get("/manager/logout", logOut);
 // router.get("/searchmanager",searchManager)
 router.get("/autocomplete", autocompleteManager);
-router.post("/getemployeebyid", getEmployeeById);
+router.get("/getemployeebyid/:id", getEmployeeById)
 //employees
 router.post("/employee/signin", employeeSignIn);
 router.post("/employee/signup", employeeSignUp);
