@@ -5,7 +5,8 @@ export default {
     try {
       const allhistories = await issuesHistoryModel
         .find()
-        .populate("issue_profession");
+        .populate("issue_profession")
+        .sort({ createdAt: -1});
 
       res.status(200).json({
         success: true,
