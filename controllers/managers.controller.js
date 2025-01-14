@@ -115,7 +115,7 @@ export default {
       Object.assign(manager, updates);
 
       const managerUpdated = await manager.save();
-      
+
       res.status(200).json({
         success: true,
         message: true,
@@ -155,7 +155,11 @@ export default {
 
       const skip = (page - 1) * limit;
 
-      const allManagers = await managerModel.find().skip(skip).limit(limit);
+      const allManagers = await managerModel
+      .find()
+      .sort({ createdAt: -1})
+      .skip(skip)
+      .limit(limit);
       res.status(200).json({
         success: true,
         message: true,

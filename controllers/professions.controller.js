@@ -9,7 +9,11 @@ export default {
 
       const skip = (page - 1) * limit;
 
-      const professions = await professionsModal.find().skip(skip).limit(limit);
+      const professions = await professionsModal
+      .find()
+      .sort({ createdAt: -1})
+      .skip(skip)
+      .limit(limit);
 
       res.status(200).json({
         success: true,

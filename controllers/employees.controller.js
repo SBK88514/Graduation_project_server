@@ -359,6 +359,7 @@ export default {
       const allEmployees = await employeeModel
         .find()
         .populate("employeeId")
+        .sort({ createdAt: -1})
         .skip(skip)
         .limit(limit);
       console.log(allEmployees);

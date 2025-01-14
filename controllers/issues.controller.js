@@ -106,6 +106,7 @@ export default {
       const allIssues = await issueModel
         .find(filterObject)
         .populate(["issue_profession", "employees"])
+        .sort({ createdAt: -1})
         .skip(skip)
         .limit(limit);
 
