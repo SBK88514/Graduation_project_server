@@ -39,7 +39,7 @@ export default {
       const { manager_email, manager_password } = req.body;
       const manager = await managerModel.findOne({
         manager_email: manager_email,
-      });
+      }).select("+manager_password");
       if (!manager) throw new Error("the manager is not exist");
 
       const isPasswordValid = await compare(
@@ -56,10 +56,11 @@ export default {
         secure: true,
         maxAge: 1000 * 60 * 60 * 1,
       });
+      const { manager_password: _, ...managerWithoutPassword } = manager.toObject();
       res.status(200).json({
         success: true,
         message: "Success Login manager",
-        data: manager,
+        data: managerWithoutPassword,
       });
     } catch (error) {
       console.log(error);

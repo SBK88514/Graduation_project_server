@@ -15,6 +15,7 @@ const employeeSchema = new Schema(
     employeePassword: {
       type: String,
       required: true,
+      select: false,
     },
     employeeId: {
       ref: "professions",
@@ -35,7 +36,9 @@ const employeeSchema = new Schema(
 );
 
 employeeSchema.pre("save", async function (next) {
-  this.employeePassword = await hash(this.employeePassword, 10);
+  if(!this.isModified("employeePassword") && this.employeePassword){
+    this.employeePassword = await hash(this.employeePassword, 10);
+  }
   next();
 });
 
