@@ -17,7 +17,6 @@ async function signInUser(email, password, userType) {
   if (!user) {
     throw new Error("User not found");
   }
-  console.log("🔥 User from DB:", user); // 🔍 בדיקה מה מוחזר מהמסד נתונים
   
   const isPasswordValid = await compare(
     password, user[passwordField]);
@@ -32,7 +31,6 @@ async function signInUser(email, password, userType) {
     [passwordField]: _,
     ...userWithoutPassword
   } = user.toObject();
-  console.log("🔥 User being returned:", userWithoutPassword); // 🔍 בדוק שהשדה `employeeName` קיים
   return { token, user: userWithoutPassword };
 }
 
