@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import employeeModel from "../models/employee.model.js";
 import { compare } from "bcrypt";
 import transporter from "../service/nodemailer.service.js";
+import { signInUser } from "../services/users.service.js";
+
 
 export default {
   employeeSignUp: async (req, res) => {
@@ -247,11 +249,13 @@ export default {
   getEmployeeById: async (req, res) => {
     try {
       const { id } = req.params;
-      const employee = await employeeModel.findById(id).populate(["issues", "employeeId"]);
+      const employee = await employeeModel
+        .findById(id)
+        .populate(["issues", "employeeId"]);
       res.json({
         success: true,
         message: true,
-        data: employee.issues
+        data: employee.issues,
       });
     } catch (error) {
       console.log(error);
@@ -265,39 +269,24 @@ export default {
   employeeSignIn: async (req, res) => {
     try {
       const { employeeEmail, employeePassword } = req.body;
-      const employee = await employeeModel.findOne({ employeeEmail });
-      if (!employee) {
-        throw new Error("Email not exist");
-      }
-      const isPassworvalid = await compare(
-        employeePassword,
-        employee.employeePassword
-      );
-      console.log(employeePassword);
-      console.log(employee.employeePassword);
-      if (!isPassworvalid) {
-        throw new Error("the password not match");
-      }
-
-      const token = jwt.sign({ ...employee }, process.env.JWT_SECRET, {
-        expiresIn: 60 * 60 * 60 * 1,
-      });
+      const { token, user } = await signInUser(employeeEmail, employeePassword, "employee");
+      
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
         maxAge: 1000 * 60 * 60 * 1,
       });
+      console.log("User from service:", user);
 
       res.status(200).json({
         success: true,
         message: true,
-        data: employee,
+        data: user,
       });
     } catch (error) {
       res.status(401).json({
         success: false,
-        message: false,
-        error: error.message || error,
+        message: error.message || "Login failed",
       });
     }
   },
@@ -359,7 +348,7 @@ export default {
       const allEmployees = await employeeModel
         .find()
         .populate("employeeId")
-        .sort({ createdAt: -1})
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
       console.log(allEmployees);

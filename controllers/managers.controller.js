@@ -2,8 +2,8 @@ import { compare } from "bcrypt";
 import managerModel from "../models/manager.model.js";
 import jwt from "jsonwebtoken";
 import { query } from "express";
-// import { json } from "express";
-// import { assign } from "nodemailer/lib/shared/index.js";
+import { signInUser } from "../services/users.service.js";
+
 
 export default {
   signUp: async (req, res) => {
@@ -37,30 +37,18 @@ export default {
   signIn: async (req, res) => {
     try {
       const { manager_email, manager_password } = req.body;
-      const manager = await managerModel.findOne({
-        manager_email: manager_email,
-      }).select("+manager_password");
-      if (!manager) throw new Error("the manager is not exist");
-
-      const isPasswordValid = await compare(
-        manager_password,
-        manager.manager_password
-      );
-      if (!isPasswordValid) throw new Error("the password not valid");
-
-      const token = jwt.sign({ ...manager }, process.env.JWT_SECRET, {
-        expiresIn: 60 * 60 * 60,
-      });
+      const { token, user } = await signInUser(manager_email, manager_password, "manager");
+      
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
         maxAge: 1000 * 60 * 60 * 1,
       });
-      const { manager_password: _, ...managerWithoutPassword } = manager.toObject();
+      
       res.status(200).json({
         success: true,
         message: "Success Login manager",
-        data: managerWithoutPassword,
+        data: user,
       });
     } catch (error) {
       console.log(error);
@@ -157,10 +145,10 @@ export default {
       const skip = (page - 1) * limit;
 
       const allManagers = await managerModel
-      .find()
-      .sort({ createdAt: -1})
-      .skip(skip)
-      .limit(limit);
+        .find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
       res.status(200).json({
         success: true,
         message: true,
